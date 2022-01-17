@@ -72,23 +72,19 @@ public class OrderAPI {
 		return null;
 	}
 
+	// Get the list of Order details for the given customerEmailId by calling
+	// findOrdersByCustomerEmailId() method of CustomerOrderService
+	// For each OrderedProduct in the order,get the Product details by calling
+	// respective Product API
+	// Update the Order details with the returned Product details and return the
+	// same
+
 	@GetMapping(value = "customer/{customerEmailId}/orders")
 	public ResponseEntity<List<OrderDTO>> getOrdersOfCustomer(
 			@NotNull(message = "{email.absent}") @PathVariable String customerEmailId) throws EKartException {
-		List<OrderDTO> orderDTOs = orderService.findOrdersByCustomerEmailId(customerEmailId);
-		for (OrderDTO orderDTO : orderDTOs) {
-			for (OrderedProductDTO orderedProductDTO : orderDTO.getOrderedProducts()) {
 
-				ResponseEntity<ProductDTO> productResponse = template
-						.getForEntity("http://localhost:3333/Ekart/product-api/product/"
-								+ orderedProductDTO.getProduct().getProductId(), ProductDTO.class);
-				orderedProductDTO.setProduct(productResponse.getBody());
-
-			}
-
-		}
-		return new ResponseEntity<List<OrderDTO>>(orderDTOs, HttpStatus.OK);
-
+		// write your logic here
+		return null;
 	}
 
 	@PutMapping(value = "order/{orderId}/update/order-status")

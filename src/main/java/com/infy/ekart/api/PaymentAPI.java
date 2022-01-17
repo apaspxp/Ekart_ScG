@@ -34,26 +34,23 @@ public class PaymentAPI {
 
 	private Environment environment;
 
-
 	private RestTemplate template;
 
 	private static final Log logger = LogFactory.getLog(PaymentAPI.class);
 
-	// This api will add a new card for particular customer
-	// This method will receive CardDTO Object
+	// This api will add a new card for particular customer by calling
+	// addCustomerCard() of PaymentService, which in turn returns cardId
+	// Set the success message with value PaymentAPI.CUSTOMER_CARD_DELETED_SUCCESS
+	// appended with cardId
+	// and return the same
+	//
 	@PostMapping(value = "/customer/{customerEmailId:.+}/cards")
 	public ResponseEntity<String> addNewCard(@RequestBody CardDTO cardDTO,
 			@Pattern(regexp = "[a-zA-Z0-9._]+@[a-zA-Z]{2,}\\.[a-zA-Z][a-zA-Z.]+", message = "{invalid.email.format}") @PathVariable("customerEmailId") String customerEmailId)
 			throws EKartException, NoSuchAlgorithmException {
-		logger.info("Recieved request to add new  card for customer : " + cardDTO.getCustomerEmailId());
+		// write your logic here
 
-		int cardId;
-		cardId = paymentService.addCustomerCard(customerEmailId, cardDTO);
-		String message = environment.getProperty("PaymentAPI.NEW_CARD_ADDED_SUCCESS");
-		String toReturn = message + cardId;
-		toReturn = toReturn.trim();
-		return new ResponseEntity<>(toReturn, HttpStatus.OK);
-
+		return null;
 	}
 
 	@PutMapping(value = "/update/card")
@@ -68,16 +65,18 @@ public class PaymentAPI {
 
 	}
 
+	// Delete the customer cards details by calling deleteCustomerCard()
+	// method of PaymentService()
+	// Set the success message with value PaymentAPI.CUSTOMER_CARD_DELETED_SUCCESS
+	// and return the same
 	@DeleteMapping(value = "/customer/{customerEmailId:.+}/card/{cardID}/delete")
 	public ResponseEntity<String> deleteCustomerCard(@PathVariable("cardID") Integer cardID,
 			@Pattern(regexp = "[a-zA-Z0-9._]+@[a-zA-Z]{2,}\\.[a-zA-Z][a-zA-Z.]+", message = "{invalid.email.format}") @PathVariable("customerEmailId") String customerEmailId)
 			throws EKartException {
-		logger.info("Recieved request to delete  card :" + cardID + " of customer : " + customerEmailId);
 
-		paymentService.deleteCustomerCard(customerEmailId, cardID);
-		String modificationSuccessMsg = environment.getProperty("PaymentAPI.CUSTOMER_CARD_DELETED_SUCCESS");
-		return new ResponseEntity<>(modificationSuccessMsg, HttpStatus.OK);
+		// write your logic here
 
+		return null;
 	}
 
 	// Get the customer cards details by calling getCardsOfCustomer()
