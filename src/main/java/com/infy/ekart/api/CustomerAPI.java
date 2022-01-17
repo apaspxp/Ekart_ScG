@@ -30,7 +30,7 @@ public class CustomerAPI {
 
 	private CustomerService customerService;
 
-	@Qualifier("restTemplate")
+
 	private RestTemplate template;
 
 	private Environment environment;

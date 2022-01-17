@@ -6,7 +6,6 @@ import java.util.List;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +32,6 @@ public class OrderAPI {
 
 	private Environment environment;
 
-	@Qualifier("restTemplate")
 	private RestTemplate template;
 
 	@PostMapping(value = "/place-order")
@@ -62,21 +60,16 @@ public class OrderAPI {
 
 	}
 
+	// Get the Order details for the given orderId
+	// For each OrderedProduct in the order,get the Product details by calling
+	// respective Product API
+	// Update the Order details with the returned Product details and return the
+	// same
 	@GetMapping(value = "order/{orderId}")
 	public ResponseEntity<OrderDTO> getOrderDetails(
 			@NotNull(message = "{orderId.absent}") @PathVariable Integer orderId) throws EKartException {
-		OrderDTO orderDTO = orderService.getOrderDetails(orderId);
-		for (OrderedProductDTO orderedProductDTO : orderDTO.getOrderedProducts()) {
-
-			ResponseEntity<ProductDTO> productResponse = template.getForEntity(
-					"http://localhost:3333/Ekart/product-api/product/" + orderedProductDTO.getProduct().getProductId(),
-					ProductDTO.class);
-			orderedProductDTO.setProduct(productResponse.getBody());
-
-		}
-
-		return new ResponseEntity<OrderDTO>(orderDTO, HttpStatus.OK);
-
+		// write your logic here
+		return null;
 	}
 
 	@GetMapping(value = "customer/{customerEmailId}/orders")
