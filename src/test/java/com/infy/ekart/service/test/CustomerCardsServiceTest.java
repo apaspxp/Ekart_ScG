@@ -9,7 +9,4 @@ import org.springframework.boot.test.context.SpringBootTest;
 class CustomerCardsServiceTest {
 
 
-	@Test
-	void contextLoads() {
-	}
 }
