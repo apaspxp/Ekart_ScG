@@ -89,7 +89,7 @@ public class PaymentAPI {
 		return null;
 	}
 
-	// Annotate this method for handling resilience
+	
 	// Get the order details of Customer for the given orderId by calling respective
 	// API
 	// Update the Transaction details with the obtained Order details in above step,
