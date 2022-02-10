@@ -2,15 +2,19 @@ package com.infy.ekart.dto;
 
 import java.util.Set;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+
 
 
 public class CustomerCartDTO {
 	
 	private Integer cartId;
-	// ensure not null and validate email
-	
+	@NotNull(message = "{customeremail.absent}")
+	@Pattern(regexp = "[a-zA-Z0-9._]+@[a-zA-Z]{2,}\\.[a-zA-Z][a-zA-Z.]+" , message = "{invalid.customeremail.format}")
 	private String customerEmailId;
-	// validate aggregation object
+	@Valid
 	private Set<CartProductDTO> cartProducts;
 	
 	

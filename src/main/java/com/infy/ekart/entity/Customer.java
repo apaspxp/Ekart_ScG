@@ -1,8 +1,16 @@
 package com.infy.ekart.entity;
 
-//map class to table
-public class Customer {
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
+
+
+
+@Entity
+@Table(name = "EK_CUSTOMER")
+public class Customer {
+	@Id
 	private String emailId;
 
 	private String name;

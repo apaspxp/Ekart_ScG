@@ -1,5 +1,7 @@
 package com.infy.ekart.dto;
 
+import javax.validation.constraints.NotNull;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -14,11 +16,11 @@ public class CardDTO {
 	private String cardNumber;
 	private String nameOnCard;
 	private String hashCvv;
-	// ensure not null
+	@NotNull(message = "{transaction.cvv.notpresent}")
 	private Integer cvv;
 	private String expiryYear;
 	private String expiryMonth;
-	// ensure not null
+	@NotNull(message = "{transaction.cardId.notpresent}")
 	private Integer cardId;
 	private String customerEmailId;
 	

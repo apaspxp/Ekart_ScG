@@ -1,11 +1,14 @@
 package com.infy.ekart.dto;
 
+import javax.validation.Valid;
+import javax.validation.constraints.PositiveOrZero;
+
 public class CartProductDTO {
 	private Integer cartProductId;
 	
-	//Validate aggregation object 
+	@Valid
 	private ProductDTO product;
-	//quantity can't be zero or negative
+	@PositiveOrZero(message = "{cartproduct.invalid.quantity}")
 	private Integer quantity;
 
 	
