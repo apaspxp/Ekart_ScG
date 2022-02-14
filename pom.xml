@@ -12,7 +12,7 @@
 	<groupId>com.infy.ekart</groupId>
 	<artifactId>Ekart</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>EKart_Server</name>
+	<name>Ekart</name>
 	<description>Ekart project for Spring Boot</description>
 
 	<properties>
@@ -131,8 +131,8 @@
 						<exclude>com/infy/ekart/dto/**</exclude>
 						<exclude>com/infy/ekart/entity/**</exclude>
 						<exclude>com/infy/ekart/exception/**</exclude>
-						<exclude>com/infy/repository/**</exclude>
-						<exclude>com/infy/EkartApplication*</exclude>
+						<exclude>com/infy/ekart/repository/**</exclude>
+						<exclude>com/infy/ekart/EkartApplication*</exclude>
 					</excludes>
 					<classFolders>
 						<classFolder>${basedir}/target/classes</classFolder>
