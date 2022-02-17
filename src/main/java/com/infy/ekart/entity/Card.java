@@ -1,5 +1,7 @@
 package com.infy.ekart.entity;
 
+import java.time.LocalDate;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -26,7 +28,7 @@ public class Card {
 	private String cvv;
 	
 	@Column(name="EXPIRY_DATE")
-	private String expiryDate;
+	private LocalDate expiryDate;
 	
 	@Column(name="NAME_ON_CARD")
 	private String nameOnCard;
@@ -65,10 +67,10 @@ public class Card {
 	public void setCvv(String cvv) {
 		this.cvv = cvv;
 	}
-	public String getExpiryDate() {
+	public LocalDate getExpiryDate() {
 		return expiryDate;
 	}
-	public void setExpiryDate(String expiryDate) {
+	public void setExpiryDate(LocalDate expiryDate) {
 		this.expiryDate = expiryDate;
 	}
 	public String getNameOnCard() {

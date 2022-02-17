@@ -21,7 +21,6 @@ import com.infy.ekart.dto.CartProductDTO;
 import com.infy.ekart.dto.OrderDTO;
 import com.infy.ekart.dto.OrderStatus;
 import com.infy.ekart.dto.OrderedProductDTO;
-import com.infy.ekart.dto.ProductDTO;
 import com.infy.ekart.exception.EKartException;
 import com.infy.ekart.service.CustomerOrderService;
 

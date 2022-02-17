@@ -1,5 +1,7 @@
 package com.infy.ekart.dto;
 
+import java.time.LocalDate;
+
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -9,8 +11,8 @@ public class CardDTO {
 	@Override
 	public String toString() {
 		return "CardDTO [cardType=" + cardType + ", cardNumber=" + cardNumber + ", nameOnCard=" + nameOnCard
-				+ ", hashCvv=" + hashCvv + ", cvv=" + cvv + ", expiryYear=" + expiryYear + ", expiryMonth="
-				+ expiryMonth + ", cardId=" + cardId + ", customerEmailId=" + customerEmailId + "]";
+				+ ", hashCvv=" + hashCvv + ", cvv=" + cvv + ", expiryDate=" + expiryDate + ", cardId=" + cardId
+				+ ", customerEmailId=" + customerEmailId + "]";
 	}
 	private String cardType;
 	private String cardNumber;
@@ -18,8 +20,7 @@ public class CardDTO {
 	private String hashCvv;
 	@NotNull(message = "{transaction.cvv.notpresent}")
 	private Integer cvv;
-	private String expiryYear;
-	private String expiryMonth;
+	private LocalDate expiryDate;
 	@NotNull(message = "{transaction.cardId.notpresent}")
 	private Integer cardId;
 	private String customerEmailId;
@@ -30,17 +31,11 @@ public class CardDTO {
 	public void setCardType(String cardType) {
 		this.cardType = cardType;
 	}
-	public String getExpiryYear() {
-		return expiryYear;
+	public LocalDate getExpiryDate() {
+		return expiryDate;
 	}
-	public void setExpiryYear(String expiryYear) {
-		this.expiryYear = expiryYear;
-	}
-	public String getExpiryMonth() {
-		return expiryMonth;
-	}
-	public void setExpiryMonth(String expiryMonth) {
-		this.expiryMonth = expiryMonth;
+	public void setExpiryDate(LocalDate expiryDate) {
+		this.expiryDate = expiryDate;
 	}
 	public String getNameOnCard() {
 		return nameOnCard;
