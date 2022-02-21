@@ -36,7 +36,7 @@ public class PaymentAPI {
 
 	private RestTemplate template;
 
-	private static final Log logger = LogFactory.getLog(PaymentAPI.class);
+	Log logger = LogFactory.getLog(PaymentAPI.class);
 
 	// This api will add a new card for particular customer by calling
 	// addCustomerCard() of PaymentService, which in turn returns cardId
@@ -89,7 +89,6 @@ public class PaymentAPI {
 		return null;
 	}
 
-	
 	// Get the order details of Customer for the given orderId by calling respective
 	// API
 	// Update the Transaction details with the obtained Order details in above step,

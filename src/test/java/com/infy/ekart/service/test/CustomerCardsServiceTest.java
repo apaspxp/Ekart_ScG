@@ -34,8 +34,6 @@ class CustomerCardsServiceTest {
 	@InjectMocks
 	PaymentService paymentService = new PaymentServiceImpl();
 
-	
-
 	@Test
 	void updateCustomerCardValidTest() throws EKartException {
 		Card card = new Card();
@@ -44,8 +42,8 @@ class CustomerCardsServiceTest {
 		card.setCvv("466");
 		card.setCardType("6642150005012186");
 		card.setCardNumber("0c658eb5d61e88c86f37613342bbce6cbf278a9a86ba6514dc7e5c205f76c99f");
-		card.setExpiryDate(LocalDate.of(2028,02,24));
-		//card.setExpiryDate("2028-02-24");
+		card.setExpiryDate(LocalDate.of(2028, 02, 24));
+		// card.setExpiryDate("2028-02-24");
 		card.setCustomerEmailId("tom@infosys.com");
 		CardDTO cardDTO = new CardDTO();
 		cardDTO.setCardId(100);
@@ -63,12 +61,6 @@ class CustomerCardsServiceTest {
 		Assertions.assertEquals("PaymentService.CARD_NOT_FOUND", exp.getMessage());
 	}
 
-	
-
-	
-
-	
-
 	@Test
 	void getCardInValidTest() throws EKartException {
 		Integer cardId = 100;
@@ -82,17 +74,11 @@ class CustomerCardsServiceTest {
 		Card card = new Card();
 		card.setCardID(100);
 		card.setCvv("466");
-		card.setExpiryDate(LocalDate.of(2028,02,24));
+		card.setExpiryDate(LocalDate.of(2028, 02, 24));
 		Mockito.when(cardRepository.findById(Mockito.anyInt())).thenReturn(Optional.of(card));
 		CardDTO cardDTO = paymentService.getCard(card.getCardID());
 		Assertions.assertEquals(card.getCardID(), cardDTO.getCardId());
 	}
-
-	
-
-	
-
-	
 
 	@Test
 	void addTransactionInValidTest1() throws EKartException {
@@ -179,12 +165,12 @@ class CustomerCardsServiceTest {
 
 		Card card = new Card();
 		card.setCardType("CREDIT_CARD");
-		card.setExpiryDate(LocalDate.of(2028,02,24));
+		card.setExpiryDate(LocalDate.of(2028, 02, 24));
 		card.setNameOnCard("AIM");
 		card.setCvv("466");
 		card.setCardType("6642150005012186");
 		card.setCardNumber("0c658eb5d61e88c86f37613342bbce6cbf278a9a86ba6514dc7e5c205f76c99f");
-		card.setExpiryDate(LocalDate.of(2028,02,24));
+		card.setExpiryDate(LocalDate.of(2028, 02, 24));
 		card.setCustomerEmailId("Customer@infy.com");
 
 		Mockito.when(cardRepository.findById(Mockito.anyInt())).thenReturn(Optional.of(card));
