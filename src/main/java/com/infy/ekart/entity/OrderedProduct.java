@@ -13,6 +13,7 @@ public class OrderedProduct {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer orderedProductId;
+	private Integer orderId;
 	private Integer productId;
 	private Integer quantity;
 	
@@ -23,6 +24,15 @@ public class OrderedProduct {
 	public void setOrderedProductId(Integer orderedProductId) {
 		this.orderedProductId = orderedProductId;
 	}
+
+	public Integer getOrderId() {
+		return orderId;
+	}
+
+	public void setOrderId(Integer orderId) {
+		this.orderId = orderId;
+	}
+
 	public Integer getProductId() {
 		return productId;
 	}

@@ -7,17 +7,11 @@ import javax.validation.constraints.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import com.infy.ekart.dto.CartProductDTO;
@@ -28,13 +22,17 @@ import com.infy.ekart.service.CustomerCartService;
 
 //Add the missing annotation
 @CrossOrigin
+@RestController
 @RequestMapping(value = "/cart-api")
 public class CartAPI {
 
+	@Autowired
 	private CustomerCartService customerCartService;
 
+	@Autowired
 	private Environment environment;
 
+	@Autowired
 	private RestTemplate template;
 
 	Log logger = LogFactory.getLog(CartAPI.class);
@@ -43,10 +41,17 @@ public class CartAPI {
 	// CustomerCartService which in turn return the cartId
 	// Set the appropriate success message with cartId and return the same
 	@PostMapping(value = "/products")
-	public ResponseEntity<String> addProductToCart(CustomerCartDTO customerCartDTO) throws EKartException {
+	public ResponseEntity<String> addProductToCart(@RequestBody CustomerCartDTO customerCartDTO) throws EKartException {
 		// write your logic here
-
-		return null;
+		logger.info("Entered into addProductToCart()");
+		try {
+			Integer cartId = customerCartService.addProductToCart(customerCartDTO);
+			logger.info("Cart id: " + cartId);
+			return new ResponseEntity<String>("Product was added to cart with cart id: " + cartId, HttpStatus.OK);
+		}catch (Exception e){
+			e.printStackTrace();
+			return new ResponseEntity<String>("Product could not be added.", HttpStatus.NOT_FOUND);
+		}
 	}
 
 	@GetMapping(value = "/customer/{customerEmailId}/products")
@@ -78,9 +83,15 @@ public class CartAPI {
 			@NotNull(message = "{invalid.email.format}") @PathVariable("productId") Integer productId)
 			throws EKartException {
 		// write your logic here
-
-		return null;
-
+		logger.info("Entered into deleteProductFromCart()");
+		try {
+			customerCartService.deleteProductFromCart(customerEmailId, productId);
+			logger.info("Product was deleted from cart.");
+			return new ResponseEntity<String>("Product with product id " + productId + " was deleted from cart of the customer with email id " + customerEmailId, HttpStatus.OK);
+		}catch (Exception e){
+			e.printStackTrace();
+			return new ResponseEntity<String>("Product could not be deleted. ", HttpStatus.NOT_FOUND);
+		}
 	}
 
 	// Update the quantity of product details available in the cart of customer by
@@ -92,7 +103,15 @@ public class CartAPI {
 			@NotNull(message = "{invalid.email.format}") @PathVariable("productId") Integer productId,
 			@RequestBody String quantity) throws EKartException {
 		// write your logic here
-		return null;
+		logger.info("Entered into method modifyQuantityOfProductInCart()");
+		try {
+			customerCartService.modifyQuantityOfProductInCart(customerEmailId,productId,Integer.valueOf(quantity));
+			logger.info("Cart was updated successfully.");
+			return new ResponseEntity<String>("Cart was updated successfully with product id " + productId + " of the customer with email id " + customerEmailId, HttpStatus.OK);
+		}catch (Exception e){
+			e.printStackTrace();
+			return new ResponseEntity<String>("Cart could not be updated.", HttpStatus.NOT_FOUND);
+		}
 
 	}
 
@@ -104,9 +123,15 @@ public class CartAPI {
 			@Pattern(regexp = "[a-zA-Z0-9._]+@[a-zA-Z]{2,}\\.[a-zA-Z][a-zA-Z.]+", message = "{invalid.customeremail.format}") @PathVariable("customerEmailId") String customerEmailId)
 			throws EKartException {
 		// write your logic here
-
-		return null;
-
+		logger.info("Entered into method deleteAllProductsFromCart().");
+		try {
+			customerCartService.deleteAllProductsFromCart(customerEmailId);
+			logger.info("Cart was cleared successfully.");
+			return new ResponseEntity<String>("All the products for the customer with email id " + customerEmailId + " were deleted from cart successfully.", HttpStatus.OK);
+		}catch (Exception e){
+			e.printStackTrace();
+			return new ResponseEntity<String>("Product deletion failed.", HttpStatus.NOT_FOUND);
+		}
 	}
 
 }

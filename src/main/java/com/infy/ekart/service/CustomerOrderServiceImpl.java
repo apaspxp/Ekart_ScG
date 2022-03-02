@@ -3,22 +3,36 @@ package com.infy.ekart.service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
-import com.infy.ekart.dto.CustomerDTO;
-import com.infy.ekart.dto.OrderDTO;
-import com.infy.ekart.dto.OrderStatus;
-import com.infy.ekart.dto.OrderedProductDTO;
-import com.infy.ekart.dto.PaymentThrough;
+import com.infy.ekart.dto.*;
 import com.infy.ekart.entity.Order;
 import com.infy.ekart.entity.OrderedProduct;
+import com.infy.ekart.entity.Product;
 import com.infy.ekart.exception.EKartException;
 import com.infy.ekart.repository.CustomerOrderRepository;
+import com.infy.ekart.repository.OrderedProductRepository;
+import com.infy.ekart.repository.ProductRepository;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 //Add the missing annotation
+@Service
 public class CustomerOrderServiceImpl implements CustomerOrderService {
 
+	@Autowired
 	private CustomerOrderRepository orderRepository;
 
+	@Autowired
+	private OrderedProductRepository orderedProductRepository;
+
+	@Autowired
+	private ProductRepository productRepository;
+
+	@Autowired
 	private CustomerService customerService;
 
 	@Override
@@ -74,7 +88,33 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
 	public OrderDTO getOrderDetails(Integer orderId) throws EKartException {
 
 		// write your logic here
-		return null;
+		Optional<Order> optionalOrder = orderRepository.findById(orderId);
+		Order order = optionalOrder.orElseThrow(() -> new EKartException("CustomerOrder.ORDER_NOT_FOUND"));
+		OrderDTO orderDTO = new OrderDTO();
+		BeanUtils.copyProperties(order, orderDTO);
+		orderDTO.setOrderStatus(order.getOrderStatus().toString());
+		orderDTO.setPaymentThrough(order.getPaymentThrough().toString());
+		List<OrderedProduct> orderedProductList = order.getOrderedProducts();
+		List<OrderedProductDTO> orderedProductDTOList =
+				orderedProductList.stream().map(orderedProduct -> {
+					OrderedProductDTO orderedProductDTO = new OrderedProductDTO();
+					BeanUtils.copyProperties(orderedProduct, orderedProductDTO);
+					Optional<Product> product = productRepository.findById(orderedProduct.getProductId());
+					if (product.isPresent()) {
+						ProductDTO productDTO = new ProductDTO();
+						productDTO.setProductId(product.get().getProductId());
+						productDTO.setBrand(product.get().getBrand());
+						productDTO.setCategory(product.get().getCategory());
+						productDTO.setPrice(product.get().getPrice());
+						productDTO.setAvailableQuantity(product.get().getAvailableQuantity());
+						productDTO.setDescription(product.get().getDescription());
+						productDTO.setName(product.get().getName());
+						orderedProductDTO.setProduct(productDTO);
+					}
+					return orderedProductDTO;
+				}).collect(Collectors.toList());
+		orderDTO.setOrderedProducts(orderedProductDTOList);
+		return orderDTO;
 	}
 
 	// Get the Order details by using the OrderId
@@ -83,6 +123,10 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
 	@Override
 	public void updateOrderStatus(Integer orderId, OrderStatus orderStatus) throws EKartException {
 		// write your logic here
+		Optional<Order> optionalOrder = orderRepository.findById(orderId);
+		Order order = optionalOrder.orElseThrow(() -> new EKartException("CustomerOrder.ORDER_NOT_FOUND"));
+		order.setOrderStatus(orderStatus);
+		orderRepository.save(order);
 	}
 
 	// Get the Order details by using the OrderId
@@ -94,6 +138,14 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
 	public void updatePaymentThrough(Integer orderId, PaymentThrough paymentThrough) throws EKartException {
 
 		// write your logic here
+		Optional<Order> optionalOrder = orderRepository.findById(orderId);
+		Order order = optionalOrder.orElseThrow(() -> new EKartException("CustomerOrder.ORDER_NOT_FOUND"));
+		if (Objects.nonNull(order) && OrderStatus.CONFIRMED.compareTo(order.getOrderStatus()) == 0){
+			throw new EKartException("OrderService.TRANSACTION_ALREADY_DONE");
+		}else {
+			order.setPaymentThrough(paymentThrough);
+			orderRepository.save(order);
+		}
 	}
 
 	// Get the list of Order details by using the emailId
@@ -105,7 +157,38 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
 	@Override
 	public List<OrderDTO> findOrdersByCustomerEmailId(String emailId) throws EKartException {
 		// write your logic here
-		return null;
+		Optional<List<Order>> optionalOrder = orderRepository.findByCustomerEmailId(emailId);
+		List<Order> orders = optionalOrder.orElseThrow(() -> new EKartException("CustomerOrderService.NO_ORDERS_FOUND"));
+		List<OrderDTO> orderDTOList = orders.stream().map(order -> {
+			Optional<List<OrderedProduct>> orderedProductList = orderedProductRepository.findByOrderId(order.getOrderId());
+			List<OrderedProductDTO> orderedProductDTOList = new ArrayList<>();
+			if (orderedProductList.isPresent()) {
+				order.setOrderedProducts(orderedProductList.get());
+				orderedProductDTOList =
+						orderedProductList.get().stream().map(orderedProduct -> {
+							OrderedProductDTO orderedProductDTO = new OrderedProductDTO();
+							BeanUtils.copyProperties(orderedProduct, orderedProductDTO);
+							Optional<Product> product = productRepository.findById(orderedProduct.getProductId());
+							if (product.isPresent()) {
+								ProductDTO productDTO = new ProductDTO();
+								productDTO.setProductId(product.get().getProductId());
+								productDTO.setBrand(product.get().getBrand());
+								productDTO.setCategory(product.get().getCategory());
+								productDTO.setPrice(product.get().getPrice());
+								productDTO.setAvailableQuantity(product.get().getAvailableQuantity());
+								productDTO.setDescription(product.get().getDescription());
+								productDTO.setName(product.get().getName());
+								orderedProductDTO.setProduct(productDTO);
+							}
+							return orderedProductDTO;
+						}).collect(Collectors.toList());
+			}
+			OrderDTO orderDTO = new OrderDTO();
+			BeanUtils.copyProperties(order,orderDTO);
+			orderDTO.setOrderedProducts(orderedProductDTOList);
+			return orderDTO;
+		}).collect(Collectors.toList());
+		return orderDTOList;
 	}
 
 }

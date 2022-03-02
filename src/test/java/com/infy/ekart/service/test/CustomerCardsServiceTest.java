@@ -1,10 +1,9 @@
 package com.infy.ekart.service.test;
 
+import java.security.NoSuchAlgorithmException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -24,6 +23,8 @@ import com.infy.ekart.repository.TransactionRepository;
 import com.infy.ekart.service.PaymentService;
 import com.infy.ekart.service.PaymentServiceImpl;
 
+import javax.persistence.criteria.CriteriaBuilder;
+
 @SpringBootTest
 class CustomerCardsServiceTest {
 	// Write testcases here
@@ -33,6 +34,94 @@ class CustomerCardsServiceTest {
 	private TransactionRepository transactionRepository;
 	@InjectMocks
 	PaymentService paymentService = new PaymentServiceImpl();
+
+	@Test
+	public void addCustomerCardTest(){
+		Card card = new Card();
+		card.setCardID(122);
+		card.setNameOnCard("AIM");
+		card.setCvv("466");
+		card.setCardType("6642150005012186");
+		card.setCardNumber("0c658eb5d61e88c86f37613342bbce6cbf278a9a86ba6514dc7e5c205f76c99f");
+		card.setExpiryDate(LocalDate.of(2028, 02, 24));
+		card.setCustomerEmailId("tom@infosys.com");
+		CardDTO cardDTO = new CardDTO();
+		cardDTO.setCardId(122);
+		cardDTO.setCvv(466);
+		Mockito.when(cardRepository.findByCustomerEmailId(Mockito.anyString())).thenReturn(Optional.of(Arrays.asList(card)));
+		Mockito.when(cardRepository.save(Mockito.any())).thenReturn(card);
+		try {
+			Integer cardId = paymentService.addCustomerCard("tom@infosys.com",cardDTO);
+			Assertions.assertNull(cardId);
+		} catch (EKartException e) {
+			e.printStackTrace();
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Test
+	public void addCustomerCardInvalidTest(){
+		CardDTO cardDTO = new CardDTO();
+		cardDTO.setCardId(122);
+		cardDTO.setCvv(466);
+		Mockito.when(cardRepository.findByCustomerEmailId(Mockito.anyString())).thenReturn(Optional.empty());
+		try {
+			Assertions.assertNull(paymentService.addCustomerCard("tom@infosys.com",cardDTO));
+		} catch (EKartException e) {
+			e.printStackTrace();
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Test
+	public void deleteCustomerCardTest(){
+		Card card = new Card();
+		card.setCardID(122);
+		card.setNameOnCard("AIM");
+		card.setCvv("466");
+		card.setCardType("6642150005012186");
+		card.setCardNumber("0c658eb5d61e88c86f37613342bbce6cbf278a9a86ba6514dc7e5c205f76c99f");
+		card.setExpiryDate(LocalDate.of(2028, 02, 24));
+		card.setCustomerEmailId("tom@infosys.com");
+		Mockito.when(cardRepository.findByCardIDAndCustomerEmailId(Mockito.anyInt(), Mockito.anyString())).thenReturn(Optional.of(Arrays.asList(card)));
+		Mockito.when(cardRepository.findById(Mockito.anyInt())).thenReturn(Optional.of(card));
+		Mockito.doNothing().when(cardRepository).deleteById(Mockito.anyInt());
+		try {
+			paymentService.deleteCustomerCard("tom@infosys.com",1);
+		} catch (EKartException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Test
+	public void deleteCustomerCardInvalidTest(){
+		Mockito.when(cardRepository.findByCardIDAndCustomerEmailId(Mockito.anyInt(), Mockito.anyString())).thenReturn(Optional.empty());
+		try {
+			paymentService.deleteCustomerCard("tom@infosys.com",1);
+		} catch (EKartException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Test
+	public void getCardsOfCustomerTest(){
+		Card card = new Card();
+		card.setCardID(122);
+		card.setNameOnCard("AIM");
+		card.setCvv("466");
+		card.setCardType("6642150005012186");
+		card.setCardNumber("0c658eb5d61e88c86f37613342bbce6cbf278a9a86ba6514dc7e5c205f76c99f");
+		card.setExpiryDate(LocalDate.of(2028, 02, 24));
+		card.setCustomerEmailId("tom@infosys.com");
+		Mockito.when(cardRepository.findByCardTypeAndCustomerEmailId(Mockito.anyString(), Mockito.anyString())).thenReturn(Optional.of(Arrays.asList(card)));
+		try {
+			Assertions.assertEquals("tom@infosys.com",paymentService.getCardsOfCustomer("tom@infosys.com","Test").get(0).getCustomerEmailId());
+		} catch (EKartException e) {
+			e.printStackTrace();
+		}
+	}
 
 	@Test
 	void updateCustomerCardValidTest() throws EKartException {

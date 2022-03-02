@@ -10,8 +10,10 @@ import com.infy.ekart.dto.ProductDTO;
 import com.infy.ekart.entity.Product;
 import com.infy.ekart.exception.EKartException;
 import com.infy.ekart.repository.ProductRepository;
+import org.springframework.stereotype.Service;
 
 //Add the missing annotation
+@Service
 public class CustomerProductServiceImpl implements CustomerProductService {
 	// This method will retrieve list of all the products from database
 

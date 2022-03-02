@@ -16,12 +16,17 @@ import com.infy.ekart.entity.CustomerCart;
 import com.infy.ekart.exception.EKartException;
 import com.infy.ekart.repository.CartProductRepository;
 import com.infy.ekart.repository.CustomerCartRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 //Add the missing annotation
+@Service
 public class CustomerCartServiceImpl implements CustomerCartService {
 
+	@Autowired
 	private CustomerCartRepository customerCartRepository;
 
+	@Autowired
 	private CartProductRepository cartProductRepository;
 
 	// this method adds new product to cart
@@ -58,6 +63,8 @@ public class CustomerCartServiceImpl implements CustomerCartService {
 				if (found == false) {
 					cart.getCartProducts().add(cartProductToBeAdded);
 				}
+				cartProductToBeAdded.setCartId(cart.getCartId());
+				cartProductRepository.save(cartProductToBeAdded);
 			}
 
 			cartId = cart.getCartId();
