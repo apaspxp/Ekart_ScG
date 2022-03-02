@@ -130,7 +130,7 @@ public class CustomerCartServiceImpl implements CustomerCartService {
 		List<Integer> productIds = new ArrayList<>();
 		cart.getCartProducts().parallelStream().forEach(cp -> {
 			productIds.add(cp.getCartProductId());
-			cart.getCartProducts().remove(cp);
+//			cart.getCartProducts().remove(cp);
 		});
 
 		productIds.forEach(pid -> {

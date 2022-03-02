@@ -253,6 +253,28 @@ class CustomerCartServiceTest {
 	}
 
 	@Test
+	public void deleteAllProductFromCartValidTest() throws EKartException {
+		String email = "name@infosys.com";
+		CustomerCart customerCart = new CustomerCart();
+		customerCart.setCustomerEmailId(email);
+		Set<CartProduct> cartProductSet = new HashSet<>();
+		CartProduct cartProduct = new CartProduct();
+		cartProduct.setProductId(1);
+		CartProduct cartProduct1 = new CartProduct();
+		cartProduct.setProductId(2);
+		cartProductSet.add(cartProduct);
+		cartProductSet.add(cartProduct1);
+		customerCart.setCartProducts(cartProductSet);
+		Mockito.when(customerCartRepository.findByCustomerEmailId(Mockito.anyString()))
+				.thenReturn(Optional.of(customerCart));
+		Mockito.doNothing().when(cartProductRepository).deleteById(Mockito.anyInt());
+//		EKartException exp = Assertions.assertThrows(EKartException.class,
+//				() -> customerCartService.deleteAllProductsFromCart(email));
+		customerCartService.deleteAllProductsFromCart(email);
+
+	}
+
+	@Test
 	public void modifyQuantityOfProductInCartInValidTest2() {
 		String email = "name@infosys.com";
 		Integer productId = 135;
