@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import com.infy.ekart.repository.CartProductRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -32,6 +33,9 @@ class CustomerCartServiceTest {
 
 	@Mock
 	private CustomerCartRepository CartProductRepository;
+
+	@Mock
+	private CartProductRepository cartProductRepository;
 
 	@InjectMocks
 	CustomerCartService customerCartService = new CustomerCartServiceImpl();
@@ -66,6 +70,8 @@ class CustomerCartServiceTest {
 		rep.setCartId(10);
 		Mockito.when(customerCartRepository.findByCustomerEmailId(Mockito.anyString())).thenReturn(Optional.empty());
 		Assertions.assertEquals(cart.getCartId(), rep.getCartId());
+		Mockito.when(customerCartRepository.save(Mockito.any())).thenReturn(cart);
+		Assertions.assertNull(customerCartService.addProductToCart(c));
 	}
 
 	@Test
@@ -97,6 +103,7 @@ class CustomerCartServiceTest {
 		cart.setCartProducts(list1);
 
 		Mockito.when(customerCartRepository.findByCustomerEmailId(Mockito.anyString())).thenReturn(Optional.of(cart));
+		Mockito.when(cartProductRepository.save(Mockito.any())).thenReturn(new CartProduct());
 		Assertions.assertEquals(cart.getCartId(), customerCartService.addProductToCart(c));
 	}
 
@@ -114,6 +121,23 @@ class CustomerCartServiceTest {
 		EKartException exp = Assertions.assertThrows(EKartException.class,
 				() -> customerCartService.getProductsFromCart(email));
 		Assertions.assertEquals("CustomerCartService.NO_PRODUCT_ADDED_TO_CART", exp.getMessage());
+	}
+
+	@Test
+	public void getProductsFromCartValidTest() throws EKartException {
+		String email = "name@infosys.com";
+		CustomerCart customerCart = new CustomerCart();
+		customerCart.setCartId(2345);
+		customerCart.setCustomerEmailId(email);
+		Set<CartProduct> cartProductSet = new HashSet<>();
+		CartProduct cartProduct = new CartProduct();
+		cartProduct.setCartId(2345);
+		cartProductSet.add(cartProduct);
+		customerCart.setCartProducts(cartProductSet);
+
+		Mockito.when(customerCartRepository.findByCustomerEmailId(Mockito.anyString()))
+				.thenReturn(Optional.of(customerCart));
+		Assertions.assertEquals(1, customerCartService.getProductsFromCart(email).size());
 	}
 
 	@Test
